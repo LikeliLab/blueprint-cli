@@ -1,12 +1,17 @@
-# Project: <%= project %>
+# Project: <%= projectName %>
 
-This project was initialized by: **<%= name %>**.
+This project was initialized by: **<%= author %>**.
 
 This is a simple file generated from an EJS template.
 You can add any dynamic data you collect. For example:
 
-- **Project:** <%= project %>
-- **Author:** <%= name %>
+- **Project:** <%= projectName %>
+- **Author:** <%= author %>
+- **Description:** <%= description %>
+- **License:** <%= license %>
+<% if (includeContributing) { -%>
+- **Contributing:** See CONTRIBUTING.md (You'll need to create this file!)
+<% } -%>
 - **Date:** <%= new Date().toLocaleDateString() %>
 
 Feel free to customize this template!
