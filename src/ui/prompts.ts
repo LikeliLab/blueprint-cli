@@ -1,4 +1,4 @@
-import { input, search } from '@inquirer/prompts';
+import { input, search, select } from '@inquirer/prompts';
 import { Ora } from 'ora';
 import { 
   likeliPurple,
@@ -62,10 +62,11 @@ export async function gatherInputs(): Promise<PromptAnswers> {
   // Fetch the versions *before* showing the prompt
   const pythonVersionsList = await getAvailablePythonVersions();
   
-  const projectName = await input({
+  const packageName = await input({
     message: likeliPurple('Enter your project name:'),
     validate: (value: string) => value.length > 0 || 'Please enter a project name.'
   });
+  const packageSrcDirName = packageName.replace(/-/g, "_");
 
   const pythonVersion = await search({
     message: likeliPurple('Enter or select a Python version:'),
@@ -93,18 +94,35 @@ export async function gatherInputs(): Promise<PromptAnswers> {
     }
   });
 
-  // const license = await select({
-  //   message: likeliPurple('Choose a license:'),
-  //   choices: [
-  //     { name: 'MIT', value: 'MIT' },
-  //     { name: 'Apache 2.0', value: 'Apache-2.0' },
-  //     { name: 'GPL 3.0', value: 'GPL-3.0' },
-  //     { name: 'None', value: 'UNLICENSED' },
-  //   ],
-  // });
+  const requiresPythonVersion = `>=${pythonVersion}`;
+  const ruffTargetPythonVersion = `py${pythonVersion.replace('.', '')}`;
+
+  const authorName = await input({
+    message: likeliPurple('Enter package author name:')  
+  });
+
+  const authorEmail = await input({
+    message: likeliPurple('Enter package author email:')  
+  });
+
+  const license = await select({
+    message: likeliPurple('Choose a license:'),
+    choices: [
+      { name: 'MIT', value: 'MIT' },
+      { name: 'Apache 2.0', value: 'Apache-2.0' },
+      { name: 'GPL 3.0', value: 'GPL-3.0' },
+      { name: 'None', value: 'UNLICENSED' },
+    ],
+  });
 
   return {
-    projectName,
+    packageName,
+    packageSrcDirName,
     pythonVersion,
+    requiresPythonVersion,
+    ruffTargetPythonVersion,
+    authorName,
+    authorEmail,
+    license
   };
 }
