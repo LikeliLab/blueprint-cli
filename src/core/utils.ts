@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { copyFile } from 'fs/promises';
 import sanitize from 'sanitize-filename';
 
 /**
@@ -44,4 +45,13 @@ export function createSafeDirectory(baseDir: string, userDirName: string): void 
         // Wrap the file system error
         throw new Error(`Failed to create directory: ${err.message}`);
     }
+}
+
+export async function copySingleFile(sourceFilePath: string, destinationFilePath: string): Promise<void> {
+  try {
+    // Overwrites destinationFilePath if it exists by default
+    await copyFile(sourceFilePath, destinationFilePath);
+  } catch (err: any) {
+    throw new Error(`'Error copying file:' ${err.message}`);
+  }
 }
